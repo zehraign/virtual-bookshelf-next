@@ -1,10 +1,12 @@
 const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
 
-const userSchema = new Schema({
-  username: String,
-  email: String,
-  password: String,
+const userSchema = new mongoose.Schema({
+  name: { type: String, required: true },
+  email: { type: String, required: true, unique: true },
+  readingList: [{ 
+    book: { type: mongoose.Schema.Types.ObjectId, ref: 'Book' },
+    status: { type: String, enum: ['want to read', 'reading', 'read'], default: 'want to read' }
+  }]
 });
 
 module.exports = mongoose.model('User', userSchema);
