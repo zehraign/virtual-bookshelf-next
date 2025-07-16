@@ -51,5 +51,19 @@ router.patch('/:userId/reading-list/:itemId', async (req, res) => {
 router.get('/', (req, res) => {
   res.json({ message: 'User-Route funktioniert!' });
 });
-
+// Neuen User anlegen
+router.post('/', async (req, res) => {
+    try {
+      const { name, email } = req.body;
+      if (!name || !email) {
+        return res.status(400).json({ error: 'Name und Email sind erforderlich' });
+      }
+  
+      const newUser = new User({ name, email });
+      const savedUser = await newUser.save();
+      res.status(201).json(savedUser);
+    } catch (err) {
+      res.status(400).json({ error: err.message });
+    }
+  });
 module.exports = router;
