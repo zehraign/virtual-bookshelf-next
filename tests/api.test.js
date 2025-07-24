@@ -1,19 +1,32 @@
 const request = require('supertest');
 const express = require('express');
 const mongoose = require('mongoose');
+const { MongoMemoryServer } = require('mongodb-memory-server');
 const userRoutes = require('../routes/users');
 
 const app = express();
 app.use(express.json());
 app.use('/users', userRoutes);
 
+let mongoServer;
+
 beforeAll(async () => {
-  await mongoose.connect('mongodb://localhost:27017/virtual-bookshelf-test');
+  mongoServer = await MongoMemoryServer.create();
+  const uri = mongoServer.getUri();
+  await mongoose.connect(uri, { dbName: 'test' });
 });
 
 afterAll(async () => {
-  await mongoose.connection.db.dropDatabase();
-  await mongoose.connection.close();
+  await mongoose.disconnect();
+  await mongoServer.stop();
+});
+
+afterEach(async () => {
+  // Alle User-Daten nach jedem Test löschen
+  const collections = mongoose.connection.collections;
+  for (const key in collections) {
+    await collections[key].deleteMany({});
+  }
 });
 
 describe('POST /users', () => {
