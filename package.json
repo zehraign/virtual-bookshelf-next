@@ -26,6 +26,7 @@
     "@types/react-dom": "^19",
     "babel-jest": "^30.0.5",
     "jest": "^30.0.5",
+    "mongodb-memory-server": "^10.1.4",
     "nodemon": "^3.1.10",
     "supertest": "^7.1.4",
     "tailwindcss": "^4",
@@ -48,4 +49,3 @@
   },
   "homepage": "https://github.com/zehraign/virtual-bookshelf-next#readme"
 }
-
