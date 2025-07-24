@@ -1,27 +1,17 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const app = express();
-const PORT = 3000;
-const userRoutes = require('./routes/users');
-
-// MongoDB verbinden
-mongoose.connect('mongodb://127.0.0.1:27017/virtual-bookshelf')
-  .then(() => console.log('✅ MongoDB verbunden'))
-  .catch((err) => console.error('❌ Fehler bei MongoDB-Verbindung:', err));
-
-// Middleware
-app.use(express.json());
 const bookRoutes = require('./routes/books');
+const userRoutes = require('./routes/users'); // ← muss vorhanden sein
+
+const app = express();
+app.use(express.json());
+
 app.use('/books', bookRoutes);
-app.use('/users', userRoutes);
+app.use('/users', userRoutes); // ← GANZ WICHTIG
 
-// Test-Route
-app.get('/books', (req, res) => {
-  res.json([{ title: 'Testbuch', author: 'Autor X' }]);
-});
-
-// Server starten
-app.listen(PORT, () => {
-  console.log(`🚀 Server läuft auf http://localhost:${PORT}`);
-});
-
+mongoose.connect('mongodb://localhost:27017/virtual-bookshelf')
+  .then(() => {
+    console.log('✅ MongoDB verbunden'); 
+    app.listen(3000, () => console.log('🚀 Server läuft auf http://localhost:3000'));
+  })
+  .catch(err => console.error('❌ MongoDB-Verbindungsfehler:', err));

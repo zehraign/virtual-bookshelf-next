@@ -65,5 +65,21 @@ router.post('/', async (req, res) => {
     } catch (err) {
       res.status(400).json({ error: err.message });
     }
+
+    router.post('/:userId/reading-list', async (req, res) => {
+        try {
+          const { bookId, status } = req.body;
+          const user = await User.findById(req.params.userId);
+          if (!user) return res.status(404).json({ error: 'User nicht gefunden' });
+      
+          user.readingList.push({ book: bookId, status: status || 'want to read' });
+          await user.save();
+          res.status(201).json(user.readingList);
+        } catch (err) {
+          res.status(400).json({ error: err.message });
+        }
+      });
+      
   });
+  
 module.exports = router;
