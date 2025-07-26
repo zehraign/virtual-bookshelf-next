@@ -7,7 +7,9 @@ describe('User Model', () => {
   });
 
   afterAll(async () => {
-    await mongoose.connection.db.dropDatabase(); // DB säubern
+    if (mongoose.connection.readyState === 1 && mongoose.connection.db) {
+      await mongoose.connection.db.dropDatabase(); // DB säubern
+    }
     await mongoose.connection.close();
   });
 
